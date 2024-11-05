@@ -8,9 +8,10 @@ let strToDisplay = "";
 const displayELm = document.querySelector(".display");
 
 const operators = "%/*-+";
+let lastOperator = "";
 
 //select all the butons
-debugger;
+// debugger;
 const btns = document.querySelectorAll(".btn");
 btns.forEach((btn) => {
   btn.addEventListener("click", () => {
@@ -38,10 +39,24 @@ btns.forEach((btn) => {
     }
 
     if (operators.includes(val)) {
+      lastOperator = val;
       const lastChar = strToDisplay[strToDisplay.length - 1];
       if (operators.includes(lastChar)) {
         strToDisplay = strToDisplay.slice(0, -1);
       }
+    }
+
+    if (val === ".") {
+      // when there is a operator
+      const indexofLastOperator = strToDisplay.lastIndexOf(lastOperator);
+
+      const lastNumSet = strToDisplay.slice(indexofLastOperator);
+
+      console.log(indexofLastOperator, lastNumSet);
+      if (lastNumSet.includes(".")) return;
+
+      // when there is  no operat
+      if (!lastOperator && strToDisplay.includes(".")) return;
     }
 
     // strToDisplay += val;
