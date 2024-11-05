@@ -11,59 +11,62 @@ const operators = "%/*-+";
 let lastOperator = "";
 
 //select all the butons
-// debugger;
+
 const btns = document.querySelectorAll(".btn");
+const audio = new Audio("./assets/pranksound.mp3");
+
+const calculatorOperation = (val) => {
+  displayElm.style.background = "";
+  displayElm.style.color = "";
+  displayElm.classList.remove("prank");
+
+  if (val === "AC") {
+    strToDisplay = "";
+    display();
+    return;
+  }
+
+  if (val === "=" || val === "Enter") {
+    const lastChar = strToDisplay[strToDisplay.length - 1];
+
+    if (operators.includes(lastChar)) {
+      removeLastChar();
+    }
+    return total();
+  }
+
+  if (val === "C" || val === "Backspace") {
+    removeLastChar();
+    return display(strToDisplay);
+  }
+
+  if (operators.includes(val)) {
+    lastOperator = val;
+    const lastChar = strToDisplay[strToDisplay.length - 1];
+    if (operators.includes(lastChar)) {
+      removeLastChar();
+    }
+  }
+
+  if (val === ".") {
+    //when there is an operators
+    const indexOfLastOperator = strToDisplay.lastIndexOf(lastOperator);
+    const lastNumberSet = strToDisplay.slice(indexOfLastOperator);
+
+    if (lastNumberSet.includes(".")) return;
+
+    // when there is not operator
+    if (!lastOperator && strToDisplay.includes(".")) return;
+  }
+
+  strToDisplay += val;
+  display(strToDisplay);
+};
+
 btns.forEach((btn) => {
   btn.addEventListener("click", () => {
     const val = btn.innerText;
-
-    if (val === "AC") {
-      strToDisplay = "";
-      display();
-      return;
-    }
-
-    if (val === "=") {
-      const lastChar = strToDisplay[strToDisplay.length - 1];
-
-      if (operators.includes(lastChar)) {
-        strToDisplay = strToDisplay.slice(0, 1);
-      }
-
-      return total();
-    }
-
-    if (val === "C") {
-      strToDisplay = strToDisplay.slice(0, -1);
-      return display(strToDisplay);
-    }
-
-    if (operators.includes(val)) {
-      lastOperator = val;
-      const lastChar = strToDisplay[strToDisplay.length - 1];
-      if (operators.includes(lastChar)) {
-        strToDisplay = strToDisplay.slice(0, -1);
-      }
-    }
-
-    if (val === ".") {
-      // when there is a operator
-      const indexofLastOperator = strToDisplay.lastIndexOf(lastOperator);
-
-      const lastNumSet = strToDisplay.slice(indexofLastOperator);
-
-      console.log(indexofLastOperator, lastNumSet);
-      if (lastNumSet.includes(".")) return;
-
-      // when there is  no operat
-      if (!lastOperator && strToDisplay.includes(".")) return;
-    }
-
-    // strToDisplay += val;
-    // display(strToDisplay);
-
-    strToDisplay = strToDisplay + val;
-    display(strToDisplay);
+    calculatorOperation(val);
   });
 });
 
@@ -74,7 +77,48 @@ const display = (str) => {
 const total = () => {
   if (!strToDisplay.length) return;
 
-  const ttl = eval(strToDisplay); //not recommended to us anywhere the client can pass data.
-  strToDisplay = ttl.toString();
-  display(ttl);
+  const extraVal = randomNumber();
+  if (extraVal) {
+    displayELm.style.background = "red";
+    displayELm.style.color = "black";
+    displayELm.classList.add("prank");
+    audio.play();
+  }
+
+  try {
+    const ttl = eval(strToDisplay) + extraVal; //not recommended to us anywhere the client can pass data.
+    strToDisplay = ttl.toString();
+    display(ttl);
+  } catch (e) {
+    alert("Invalid Expression");
+  }
 };
+
+//creating random generator.
+
+const randomNumber = () => {
+  const num = Math.round(Math.random() * 10); //0-10
+  return num < 2 ? num : 0;
+};
+
+document.addEventListener("keydown", (e) => {
+  const val = e.key;
+
+  if (e.code.includes("Key") || val === "Shift") {
+    return;
+  }
+  if (e.code.includes("Digit")) {
+    console.log("its a number");
+  }
+  calculatorOperation(val);
+});
+
+console.log(typeof val);
+
+// //optimization
+// const removeLastChar() =>
+const removeLastChar = () => {
+  strToDisplay = strToDisplay.slice(0, -1);
+};
+
+const handleOnDotPress = () => {};
