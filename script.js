@@ -16,9 +16,9 @@ const btns = document.querySelectorAll(".btn");
 const audio = new Audio("./assets/pranksound.mp3");
 
 const calculatorOperation = (val) => {
-  displayElm.style.background = "";
-  displayElm.style.color = "";
-  displayElm.classList.remove("prank");
+  displayELm.style.background = "";
+  displayELm.style.color = "";
+  displayELm.classList.remove("prank");
 
   if (val === "AC") {
     strToDisplay = "";
@@ -98,7 +98,7 @@ const total = () => {
 
 const randomNumber = () => {
   const num = Math.round(Math.random() * 10); //0-10
-  return num < 2 ? num : 0;
+  return num < 6 ? num : 0;
 };
 
 document.addEventListener("keydown", (e) => {
